@@ -32,6 +32,7 @@ for i, name in enumerate(names):
     users.append({
         "userId": f"u{i+1}",
         "name": name,
+        "displayName": name,  # Added for visualization
         "joinedAt": (datetime(2025, 1, 1) + timedelta(days=random.randint(0, 200))).strftime("%Y-%m-%d")
     })
 users_df = pd.DataFrame(users)
@@ -45,7 +46,7 @@ hashtags = [
     "MentalHealth", "Gaming", "FashionWeek", "RenewableEnergy", "Blockchain",
     "AfricanTech", "MusicFest", "DigitalNomad", "Cybersecurity", "HealthTech"
 ]
-hashtags_df = pd.DataFrame({"tag": [tag.lower() for tag in hashtags]})
+hashtags_df = pd.DataFrame({"tag": [tag.lower() for tag in hashtags], "displayTag": [tag.lower() for tag in hashtags]})
 hashtags_df.to_csv(os.path.join(output_dir, "hashtags.csv"), index=False)
 
 # 3. Generate Posts (200 posts with natural text)
@@ -65,10 +66,13 @@ popular_posts = random.sample(range(1, 201), 10)  # For viral posts
 post_weights = [10 if i in popular_posts else 1 for i in range(1, 201)]
 for i in range(200):
     user_id = f"u{random.randint(1, 50)}"
-    user_name = next(u['name'] for u in users if u['userId'] == user_id)  # Get user's name
+    user_name = next(u['name'] for u in users if u['userId'] == user_id)
     created_at = datetime(2025, 3, 1) + timedelta(days=random.randint(0, 150), hours=random.randint(0, 23))
     num_mentions = random.randint(0, 2)
-    mentions = " ".join([f"@{random.choice([n for n in names if n != user_name]).split()[0]}" for _ in range(num_mentions)])
+    try:
+        mentions = " ".join([f"@{random.choice([n for n in names if n != user_name]).split()[0]}" for _ in range(num_mentions)])
+    except IndexError:
+        mentions = ""
     num_tags = random.randint(1, 3)
     tags = " ".join([f"#{random.choice(hashtags)}" for _ in range(num_tags)])
     has_url = random.random() < 0.2
@@ -77,12 +81,14 @@ for i in range(200):
     media_indicator = random.choice([" [image]", " [video]"]) if has_media else ""
     template = random.choice(post_templates).format(mention=mentions, hashtag=tags, url=url)
     text = f"{template}{media_indicator}".strip()
+    display_text = (text[:20] + "...") if len(text) > 20 else text  # Truncated for visualization
     post_id = f"p{i+1}"
     post_texts[post_id] = text
     posts.append({
         "postId": post_id,
         "userId": user_id,
         "text": text,
+        "displayText": display_text,  # Added for visualization
         "createdAt": created_at.strftime("%Y-%m-%dT%H:%M:%S"),
         "likesCount": 0
     })
@@ -97,7 +103,8 @@ for i in range(100):
     media.append({
         "mediaId": f"m{i+1}",
         "type": media_type,
-        "url": url
+        "url": url,
+        "displayUrl": media_type  # Added for visualization (e.g., "image" or "video")
     })
 media_df = pd.DataFrame(media)
 media_df.to_csv(os.path.join(output_dir, "media.csv"), index=False)
@@ -105,9 +112,11 @@ media_df.to_csv(os.path.join(output_dir, "media.csv"), index=False)
 # 5. Generate URLs (50 URL nodes)
 urls = []
 for i in range(50):
+    url = f"https://www.example-news.com/article/{i+1}?topic={random.choice(hashtags)}"
     urls.append({
         "urlId": f"l{i+1}",
-        "url": f"https://www.example-news.com/article/{i+1}?topic={random.choice(hashtags)}"
+        "url": url,
+        "displayUrl": f"article/{i+1}"  # Added for visualization
     })
 urls_df = pd.DataFrame(urls)
 urls_df.to_csv(os.path.join(output_dir, "urls.csv"), index=False)
@@ -133,7 +142,10 @@ for i in range(240):  # First pass: comments on posts
     user_id = f"u{random.randint(1, 50)}"
     user_name = next(u['name'] for u in users if u['userId'] == user_id)
     num_mentions = random.randint(0, 1)
-    mentions = " ".join([f"@{random.choice([n for n in names if n != user_name]).split()[0]}" for _ in range(num_mentions)])
+    try:
+        mentions = " ".join([f"@{random.choice([n for n in names if n != user_name]).split()[0]}" for _ in range(num_mentions)])
+    except IndexError:
+        mentions = ""
     num_tags = random.randint(0, 2)
     tags = " ".join([f"#{random.choice(hashtags)}" for _ in range(num_tags)])
     has_url = random.random() < 0.1
@@ -142,12 +154,14 @@ for i in range(240):  # First pass: comments on posts
     media_indicator = random.choice([" [image]", " [video]"]) if has_media else ""
     template = random.choice(comment_templates).format(mention=mentions, hashtag=tags, url=url)
     text = f"{template}{media_indicator}".strip()
+    display_text = (text[:20] + "...") if len(text) > 20 else text  # Truncated for visualization
     comment_id = f"c{i+1}"
     comment_texts[comment_id] = text
     comments.append({
         "commentId": comment_id,
         "userId": user_id,
         "text": text,
+        "displayText": display_text,  # Added for visualization
         "createdAt": created_at.strftime("%Y-%m-%dT%H:%M:%S"),
         "likesCount": 0
     })
@@ -156,13 +170,16 @@ for i in range(240):  # First pass: comments on posts
 
 # Second pass: comments on comments
 for i in range(240, 300):
-    parent_comment_id = f"c{random.randint(1, i)}"  # Choose from c1 to current i
+    parent_comment_id = f"c{random.randint(1, i)}"
     parent_time = comment_created_times[parent_comment_id]
     created_at = parent_time + timedelta(minutes=random.randint(1, 1440))
     user_id = f"u{random.randint(1, 50)}"
     user_name = next(u['name'] for u in users if u['userId'] == user_id)
     num_mentions = random.randint(0, 1)
-    mentions = " ".join([f"@{random.choice([n for n in names if n != user_name]).split()[0]}" for _ in range(num_mentions)])
+    try:
+        mentions = " ".join([f"@{random.choice([n for n in names if n != user_name]).split()[0]}" for _ in range(num_mentions)])
+    except IndexError:
+        mentions = ""
     num_tags = random.randint(0, 2)
     tags = " ".join([f"#{random.choice(hashtags)}" for _ in range(num_tags)])
     has_url = random.random() < 0.1
@@ -171,12 +188,14 @@ for i in range(240, 300):
     media_indicator = random.choice([" [image]", " [video]"]) if has_media else ""
     template = random.choice(comment_templates).format(mention=mentions, hashtag=tags, url=url)
     text = f"{template}{media_indicator}".strip()
+    display_text = (text[:20] + "...") if len(text) > 20 else text
     comment_id = f"c{i+1}"
     comment_texts[comment_id] = text
     comments.append({
         "commentId": comment_id,
         "userId": user_id,
         "text": text,
+        "displayText": display_text,
         "createdAt": created_at.strftime("%Y-%m-%dT%H:%M:%S"),
         "likesCount": 0
     })
