@@ -1,0 +1,71 @@
+// Create constraints for uniqueness
+CREATE CONSTRAINT user_id IF NOT EXISTS FOR (u:User) REQUIRE u.userId IS UNIQUE;
+CREATE CONSTRAINT post_id IF NOT EXISTS FOR (p:Post) REQUIRE p.postId IS UNIQUE;
+CREATE CONSTRAINT hashtag_tag IF NOT EXISTS FOR (h:Hashtag) REQUIRE h.tag IS UNIQUE;
+CREATE CONSTRAINT media_id IF NOT EXISTS FOR (m:Media) REQUIRE m.mediaId IS UNIQUE;
+CREATE CONSTRAINT url_id IF NOT EXISTS FOR (u:URL) REQUIRE u.urlId IS UNIQUE;
+CREATE CONSTRAINT comment_id IF NOT EXISTS FOR (c:Comment) REQUIRE c.commentId IS UNIQUE;
+
+// Import Users
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/users.csv' AS row
+CREATE (:User {userId: row.userId, name: row.name, displayName: row.displayName, joinedAt: date(row.joinedAt)});
+
+// Import Hashtags
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports//hashtags.csv' AS row
+CREATE (:Hashtag {tag: row.tag, displayTag: row.displayTag});
+
+// Import Posts
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/posts.csv' AS row
+CREATE (:Post {postId: row.postId, userId: row.userId, text: row.text, displayText: row.displayText, createdAt: datetime(row.createdAt), likesCount: toInteger(row.likesCount)});
+
+// Import Media
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/media.csv' AS row
+CREATE (:Media {mediaId: row.mediaId, type: row.type, url: row.url, displayUrl: row.displayUrl});
+
+// Import URLs
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/urls.csv' AS row
+CREATE (:URL {urlId: row.urlId, url: row.url, displayUrl: row.displayUrl});
+
+// Import Comments
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/comments.csv' AS row
+CREATE (:Comment {commentId: row.commentId, userId: row.userId, text: row.text, displayText: row.displayText, createdAt: datetime(row.createdAt), likesCount: toInteger(row.likesCount)});
+
+// Import FOLLOWS
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/follows.csv' AS row
+MATCH (u1:User {userId: row.userId1}), (u2:User {userId: row.userId2})
+CREATE (u1)-[:FOLLOWS {since: date(row.since)}]->(u2);
+
+// Import LIKED
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/likes.csv' AS row
+MATCH (u:User {userId: row.userId})
+MATCH (target) WHERE (target.postId = row.targetId AND row.targetType = 'Post') OR (target.commentId = row.targetId AND row.targetType = 'Comment')
+CREATE (u)-[:LIKED {timestamp: datetime(row.timestamp)}]->(target);
+
+// Import TAGGED_WITH
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/tagged_with.csv' AS row
+MATCH (h:Hashtag {tag: row.tag})
+MATCH (target) WHERE (target.postId = row.postId) OR (target.commentId = row.commentId)
+CREATE (target)-[:TAGGED_WITH]->(h);
+
+// Import MENTIONS
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/mentions.csv' AS row
+MATCH (u:User {userId: row.userId})
+MATCH (source) WHERE (source.postId = row.postId) OR (source.commentId = row.commentId)
+CREATE (source)-[:MENTIONS]->(u);
+
+// Import REPLIES_TO
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/replies_to.csv' AS row
+MATCH (c:Comment {commentId: row.commentId})
+MATCH (p) WHERE (p.postId = row.parentId AND row.parentType = 'Post') OR (p.commentId = row.parentId AND row.parentType = 'Comment')
+CREATE (c)-[:REPLIES_TO {timestamp: datetime()}]->(p);
+
+// Import SHARES
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/shares.csv' AS row
+MATCH (u:User {userId: row.userId}), (p:Post {postId: row.postId})
+CREATE (u)-[:SHARES {timestamp: datetime(row.timestamp)}]->(p);
+
+// Import CONTAINS
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-data/refs/heads/main/neo4j_imports/contains.csv' AS row
+MATCH (parent) WHERE (parent.postId = row.parentId AND row.parentType = 'Post') OR (parent.commentId = row.parentId AND row.parentType = 'Comment')
+MATCH (child) WHERE (child.mediaId = row.childId AND row.childType = 'Media') OR (child.urlId = row.childId AND row.childType = 'URL')
+CREATE (parent)-[:CONTAINS]->(child);
