@@ -1,0 +1,75 @@
+FOR TESTING
+
+//1. Show Schema
+CALL db.schema.visualization();
+
+
+👉 “This is the schema of my database. I have Users, Posts, Comments, Media, Hashtags, and URLs, connected with relationships such as CREATED, FOLLOWS, LIKED, REPLIES_TO, TAGGED_WITH, and so on. I already created the constraints and imports, so I’ll just show the results here.”
+
+//2. Show Some Users
+MATCH (u:User)
+RETURN u.displayName, u.joinedAt
+LIMIT 5;
+
+
+👉 “Here are some users with their display names and the dates they joined.”
+
+
+//3. Comments on Posts
+MATCH (c:Comment)-[:REPLIES_TO]->(p:Post)
+RETURN c.commentId, c.text, p.postId
+LIMIT 5;
+
+
+👉 “Here we can see comments that reply to posts. Some comments also reply to other comments, creating discussion threads.”
+
+//4. Friend-of-Friend (Path Query)
+MATCH (a:User {displayName:"Alicia Keys"})-[:FOLLOWS*2]-(fof:User)
+RETURN DISTINCT fof.displayName;
+
+
+👉 “This query finds friends-of-friends of Alicia Keys by traversing two FOLLOWS relationships.”
+
+//5. Users Who Liked the Same Post (Pattern Matching)
+MATCH (u1:User)-[:LIKED]->(p:Post)<-[:LIKED]-(u2:User)
+WHERE u1 <> u2
+RETURN u1.displayName, u2.displayName, p.postId
+LIMIT 5;
+
+
+👉 “This query finds users who liked the same post, showing hidden communities of interest.”
+
+//6. Most Liked Post (Aggregation)
+MATCH (u:User)-[:LIKED]->(p:Post)
+RETURN p.postId, COUNT(u) AS likeCount
+ORDER BY likeCount DESC
+LIMIT 1;
+
+
+👉 “This finds the most liked post in the dataset.”
+
+//7. Write Query (Create New Like)
+MATCH (u:User {displayName:"Mark"}), (p:Post {postId:"p1"})
+MERGE (u)-[:LIKED]->(p);
+
+
+👉 “Here I create a new like from Mark to post p1. MERGE ensures it only adds it if it doesn’t already exist.”
+
+//8. PageRank (Influence)
+CALL gds.pageRank.stream('userGraph')
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).displayName AS user, score
+ORDER BY score DESC
+LIMIT 5;
+
+
+👉 “This is PageRank, an algorithm that ranks the most influential users in the network based on follow relationships.”
+
+//9. Louvain (Communities)
+CALL gds.louvain.stream('userGraph')
+YIELD nodeId, communityId
+RETURN gds.util.asNode(nodeId).displayName AS user, communityId
+ORDER BY communityId, user;
+
+
+👉 “This is Louvain community detection. It groups users into communities based on who follows whom.”

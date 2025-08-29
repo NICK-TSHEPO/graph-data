@@ -1,3 +1,7 @@
+
+
+
+
 // Create constraints for uniqueness
 CREATE CONSTRAINT user_id IF NOT EXISTS FOR (u:User) REQUIRE u.userId IS UNIQUE;
 CREATE CONSTRAINT post_id IF NOT EXISTS FOR (p:Post) REQUIRE p.postId IS UNIQUE;
@@ -69,3 +73,13 @@ LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/NICK-TSHEPO/graph-
 MATCH (parent) WHERE (parent.postId = row.parentId AND row.parentType = 'Post') OR (parent.commentId = row.parentId AND row.parentType = 'Comment')
 MATCH (child) WHERE (child.mediaId = row.childId AND row.childType = 'Media') OR (child.urlId = row.childId AND row.childType = 'URL')
 CREATE (parent)-[:CONTAINS]->(child);
+
+
+//==CREATING ALGORITHM==
+CALL gds.graph.project(
+  'userGraph',
+  'User',
+  'FOLLOWS'
+);
+
+
