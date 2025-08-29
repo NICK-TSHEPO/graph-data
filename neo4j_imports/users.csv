@@ -1,51 +1,51 @@
-userId,name,joinedAt
-u1,Satya Nadella,2025-05-22
-u2,Naledi Pandor,2025-03-17
-u3,Tems,2025-06-10
-u4,Yemi Alade,2025-06-08
-u5,Alicia Keys,2025-04-03
-u6,Denzel Washington,2025-05-28
-u7,Ngozi Okonjo-Iweala,2025-02-19
-u8,Akon,2025-06-30
-u9,Rema,2025-01-18
-u10,Chimamanda Adichie,2025-01-12
-u11,Wizkid,2025-06-19
-u12,Jay-Z,2025-02-28
-u13,Ellen DeGeneres,2025-07-17
-u14,Jeff Bezos,2025-03-16
-u15,Malala Yousafzai,2025-01-21
-u16,Usain Bolt,2025-03-01
-u17,Lizzo,2025-01-26
-u18,Rihanna,2025-04-08
-u19,Mindy Kaling,2025-03-13
-u20,Taylor Swift,2025-04-27
-u21,Drake,2025-06-12
-u22,Kendrick Lamar,2025-04-04
-u23,Cristiano Ronaldo,2025-02-11
-u24,Lionel Messi,2025-04-05
-u25,Beyoncé Knowles,2025-04-01
-u26,Trevor Noah,2025-02-23
-u27,Zozibini Tunzi,2025-06-21
-u28,Cardi B,2025-03-10
-u29,Femi Otedola,2025-06-29
-u30,Serena Williams,2025-06-24
-u31,Lupita Nyong'o,2025-06-15
-u32,Tim Cook,2025-01-19
-u33,Elon Musk,2025-06-05
-u34,Chris Hemsworth,2025-06-12
-u35,Safarina Nkoana,2025-02-13
-u36,Burna Boy,2025-05-17
-u37,Adele,2025-07-06
-u38,Sundar Pichai,2025-03-04
-u39,Jack Ma,2025-02-11
-u40,Ryan Reynolds,2025-04-29
-u41,Tiwa Savage,2025-04-08
-u42,Shonda Rhimes,2025-03-11
-u43,Kanye West,2025-06-13
-u44,Bill Gates,2025-06-26
-u45,Ayra Starr,2025-05-23
-u46,Davido,2025-02-26
-u47,Greta Thunberg,2025-06-25
-u48,Snoop Dogg,2025-03-25
-u49,Angelique Kidjo,2025-07-16
-u50,Post Malone,2025-07-18
+userId,name,displayName,joinedAt
+u1,Alicia Keys,Alicia Keys,2025-05-22
+u2,Ellen DeGeneres,Ellen DeGeneres,2025-03-17
+u3,Naledi Pandor,Naledi Pandor,2025-06-10
+u4,Wizkid,Wizkid,2025-06-08
+u5,Cardi B,Cardi B,2025-04-03
+u6,Angelique Kidjo,Angelique Kidjo,2025-05-28
+u7,Tiwa Savage,Tiwa Savage,2025-02-19
+u8,Kendrick Lamar,Kendrick Lamar,2025-06-30
+u9,Kanye West,Kanye West,2025-01-18
+u10,Shonda Rhimes,Shonda Rhimes,2025-01-12
+u11,Trevor Noah,Trevor Noah,2025-06-19
+u12,Satya Nadella,Satya Nadella,2025-02-28
+u13,Safarina Nkoana,Safarina Nkoana,2025-07-17
+u14,Chris Hemsworth,Chris Hemsworth,2025-03-16
+u15,Chimamanda Adichie,Chimamanda Adichie,2025-01-21
+u16,Drake,Drake,2025-03-01
+u17,Taylor Swift,Taylor Swift,2025-01-26
+u18,Lupita Nyong'o,Lupita Nyong'o,2025-04-08
+u19,Burna Boy,Burna Boy,2025-03-13
+u20,Jack Ma,Jack Ma,2025-04-27
+u21,Adele,Adele,2025-06-12
+u22,Lionel Messi,Lionel Messi,2025-04-04
+u23,Ayra Starr,Ayra Starr,2025-02-11
+u24,Rihanna,Rihanna,2025-04-05
+u25,Snoop Dogg,Snoop Dogg,2025-04-01
+u26,Ryan Reynolds,Ryan Reynolds,2025-02-23
+u27,Mindy Kaling,Mindy Kaling,2025-06-21
+u28,Zozibini Tunzi,Zozibini Tunzi,2025-03-10
+u29,Serena Williams,Serena Williams,2025-06-29
+u30,Yemi Alade,Yemi Alade,2025-06-24
+u31,Cristiano Ronaldo,Cristiano Ronaldo,2025-06-15
+u32,Tim Cook,Tim Cook,2025-01-19
+u33,Femi Otedola,Femi Otedola,2025-06-05
+u34,Greta Thunberg,Greta Thunberg,2025-06-12
+u35,Jay-Z,Jay-Z,2025-02-13
+u36,Rema,Rema,2025-05-17
+u37,Jeff Bezos,Jeff Bezos,2025-07-06
+u38,Tems,Tems,2025-03-04
+u39,Bill Gates,Bill Gates,2025-02-11
+u40,Usain Bolt,Usain Bolt,2025-04-29
+u41,Mark Zuckerberg,Mark Zuckerberg,2025-04-08
+u42,Pharrell Williams,Pharrell Williams,2025-03-11
+u43,Lizzo,Lizzo,2025-06-13
+u44,Kehinde Wiley,Kehinde Wiley,2025-06-26
+u45,Post Malone,Post Malone,2025-05-23
+u46,Oprah Winfrey,Oprah Winfrey,2025-02-26
+u47,Beyoncé Knowles,Beyoncé Knowles,2025-06-25
+u48,Denzel Washington,Denzel Washington,2025-03-25
+u49,Sundar Pichai,Sundar Pichai,2025-07-16
+u50,Ngozi Okonjo-Iweala,Ngozi Okonjo-Iweala,2025-07-18
